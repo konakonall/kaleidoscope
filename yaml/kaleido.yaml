@@ -1,0 +1,41 @@
+version: 1.0.0
+app:
+  modules:
+    foundation: com.tencent.qcloud:qcloud-foundation:1.5.1
+    core: com.tencent.tac:tac-core:1.2.3
+  env:
+    cos_secret_id: cos_secret_id
+    cos_secret_key: cos_secret_key
+    bintray_user: bintray_user
+    bintray_apikey: bintray_apikey
+    bugly_appid: bugly_appid
+    bugly_appkey: bugly_appkey
+workflows:
+  publish:
+    steps:
+      - upload:
+          modules: '*'
+          repository: bintray
+          mappings:
+            dest: bugly
+            type: merge
+            pkg: your-package
+            ver: 1.2.3
+            name: mapping.txt
+      - archive:
+          modules: '*'
+          dest: cos
+          region: cos-region
+          bucket: cos-bucket
+  debug:
+    steps:
+      - upload:
+          modules: '*'
+          repository: mavenLocal
+          proguard: false
+      - archive:
+          modules:
+            - foundation
+          dest: file
+          path: ~/Downloads/kal
+
